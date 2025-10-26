@@ -5,7 +5,6 @@
     --color--segundario:#3282B8 ; 
     --color--terciario:  #BBE1FA ; 
     --color--cuartario: #BBE1FA;
-    --color--glitch: #00FFFF; /* Color cian para el glitch */
     --color--rojo: #B22222; /* Rojo para tags */
 
     --fuente--montserrat:"Montserrat", sans-serif ;
@@ -20,63 +19,69 @@ body{
     box-sizing: border-box;
     background-color: var(--color--primario);
     
-    /* --- FONDO HACKER AÑADIDO --- */
-    /* Usamos tu imagen de 'back-end.jpg' como fondo */
     background-image: linear-gradient(rgba(27, 38, 44, 0.98), rgba(27, 38, 44, 0.98)), url(./assets/back-end.jpg);
-    background-size: cover; /* Cubre toda la pantalla */
-    background-position: center; /* Centra la imagen */
-    background-attachment: fixed; /* Efecto parallax al hacer scroll */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; 
 
     color: var(--color--segundario);
 }
+
+/* --- NUEVO: EFECTO SCANLINES --- */
+body::after {
+    content: "";
+    position: fixed; /* Fijo para que cubra todo */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Líneas negras muy sutiles */
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        rgba(0, 0, 0, 0.2) 1px,
+        rgba(0, 0, 0, 0.2) 2px,
+        transparent 3px
+    );
+    pointer-events: none; /* Permite hacer clic a través de él */
+    z-index: 1000; /* Se asegura de estar encima del fondo */
+}
+/* --- FIN DE SCANLINES --- */
 
 .texto-destacado {
     color: var(--color--terciario); ;
 }
 
-/* --- ANIMACIÓN GLITCH AÑADIDA --- */
-.texto-destacado.glitch {
-    position: relative;
-    animation: glitch 1.5s infinite linear alternate-reverse;
+/* --- NUEVO: ANIMACIÓN TYPEWRITER (MÁQUINA DE ESCRIBIR) --- */
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
 }
-.texto-destacado.glitch::before,
-.texto-destacado.glitch::after {
-    content: attr(data-text); /* Copia el texto */
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: transparent;
-}
-.texto-destacado.glitch::before {
-    left: 2px;
-    text-shadow: -2px 0 var(--color--glitch);
-    clip: rect(auto, auto, auto, auto);
-    animation: glitch 1s infinite linear alternate-reverse;
-}
-.texto-destacado.glitch::after {
-    left: -2px;
-    text-shadow: -2px 0 var(--color--rojo);
-    clip: rect(auto, auto, auto, auto);
-    animation: glitch 2s infinite linear alternate-reverse;
+@keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: var(--color--terciario); }
 }
 
-@keyframes glitch {
-    0% { clip-path: inset(40% 0 30% 0); }
-    20% { clip-path: inset(10% 0 55% 0); }
-    40% { clip-path: inset(30% 0 10% 0); }
-    60% { clip-path: inset(50% 0 30% 0); }
-    80% { clip-path: inset(20% 0 45% 0); }
-    100% { clip-path: inset(40% 0 30% 0); }
+.typewriter {
+    display: inline-block; /* Necesario para animar el ancho */
+    overflow: hidden; /* Oculta el texto que no se ha "tecleado" */
+    white-space: nowrap; /* Mantiene el texto en una línea */
+    border-right: .15em solid var(--color--terciario); /* El cursor parpadeante */
+    width: 0; /* Comienza sin ancho (oculto) */
+    
+    /* Animación: 
+       typing: 2s de duración, 33 pasos (1 por caracter), 1s de retraso, se queda al final
+       blink-caret: 0.75s de duración, infinito
+    */
+    animation: 
+        typing 2s steps(33, end) 1s 1 forwards,
+        blink-caret .75s step-end infinite;
 }
-/* --- FIN DE ANIMACIÓN GLITCH --- */
+/* --- FIN DE TYPEWRITER --- */
 
 
 .presentacion {
     display: flex;
-    /* --- CORRECCIÓN DE LAYOUT (HOME) --- */
-    /* Alineamos al inicio (arriba) para arreglar el home */
     align-items: flex-start; 
     padding: 7% 15%;
     justify-content: space-between;
@@ -90,8 +95,6 @@ body{
     gap: 40px;
 }
 
-/* --- REGLA AÑADIDA --- */
-/* Esto arregla la página de Proyectos */
 .presentacion-contenido.full-width {
     width: 100%;
 }
@@ -99,14 +102,15 @@ body{
 .presentacion-contenido-titulo{
     font-size: 2.25rem;
     font-family: var(--fuente--krona);
-    /* --- GLOW AÑADIDO --- */
     text-shadow: 0 0 5px rgba(187, 225, 250, 0.2);
+    /* Altura mínima para que el layout no "salte" mientras se teclea */
+    min-height: 110px; 
 }
 
 .presentacion-contenido-texto{
     font-size: 1.25rem; 
     font-family: var(--fuente--montserrat);
-    line-height: 1.6; /* Más espacio entre líneas */
+    line-height: 1.6;
 }
 
 .presentacion-contenido-enlace{
@@ -136,23 +140,20 @@ body{
      border: 2px solid var(--color--terciario) ;
      display: flex;
      justify-content: center;
-     /* --- Iconos y texto alineados --- */
      align-items: center; 
-     gap: 16px; /* Más espacio para el icono */
+     gap: 16px; 
      transition: all 0.3s ease;
 }
 
 .presentacion-contenido-enlace-boton:hover{
     background-color: var(--color--cuartario);
     color: var(--color--primario);
-    /* --- GLOW EN BOTÓN --- */
     box-shadow: 0 0 15px var(--color--cuartario);
     transform: translateY(-3px);
 }
 
-/* --- Iconos (DevIcons) --- */
 .presentacion-contenido-enlace-boton i {
-    font-size: 2rem; /* Iconos más grandes */
+    font-size: 2rem; 
 }
 
 .Imagen-presentacion{
@@ -161,7 +162,6 @@ body{
   border-radius: 5%;
   float: inline-start;
   width:40%;  
-  /* --- Sombra sutil a la imagen --- */
   box-shadow: 0 0 20px rgba(187, 225, 250, 0.1);
 }
 
@@ -174,7 +174,7 @@ body{
     font-family: var(--fuente--montserrat);
     font-size: 1.5rem;
     font-weight: 400;
-    margin-top: 50px; /* Separación */
+    margin-top: 50px; 
 }
 
 .header{
@@ -198,7 +198,6 @@ body{
 
 .header-menu-link:hover{
     color: var(--color--terciario);
-    /* --- GLOW EN MENÚ --- */
     text-shadow: 0 0 8px var(--color--terciario);
     background-color: rgba(187, 225, 250, 0.1);
     border-radius: 5px;
@@ -211,7 +210,6 @@ body{
     text-shadow: 0 0 8px var(--color--segundario);
 }
 
-/* --- ESTILOS MEJORADOS 'ABOUT.HTML' --- */
 .skills-container{
     display: flex;
     justify-content: space-between;
@@ -220,12 +218,11 @@ body{
 }
 .skills-categoria{
     flex: 1;
-    /* Fondo transparente para integrar con el body */
     background-color: rgba(42, 55, 63, 0.7); 
     padding: 20px;
     border-radius: 8px;
     border: 1px solid var(--color--terciario);
-    backdrop-filter: blur(5px); /* Efecto "glass" */
+    backdrop-filter: blur(5px); 
 }
 .skills-categoria h3{
     font-family: var(--fuente--krona);
@@ -243,7 +240,6 @@ body{
     text-align: center;
 }
 
-/* --- ESTILOS MEJORADOS 'PROYECTOS.HTML' --- */
 .proyectos-grid{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -252,7 +248,7 @@ body{
 }
 
 .proyecto-card{
-    background-color: rgba(27, 38, 44, 0.8); /* Fondo semi-transparente */
+    background-color: rgba(27, 38, 44, 0.8); 
     border: 2px solid var(--color--terciario);
     border-radius: 8px;
     padding: 24px;
@@ -260,7 +256,7 @@ body{
     flex-direction: column;
     gap: 15px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    backdrop-filter: blur(5px); /* Efecto "glass" */
+    backdrop-filter: blur(5px); 
 }
 
 .proyecto-card:hover{
@@ -314,7 +310,6 @@ body{
 }
 
 
-/* --- SECCIÓN RESPONSIVA ACTUALIZADA --- */
 @media(max-width: 1200px){
     .header{
         padding: 10%;
@@ -330,7 +325,6 @@ body{
     }
 
     .presentacion-contenido{
-        /* En móvil, el contenido siempre es full-width */
         width: auto;
     }
     
@@ -348,5 +342,10 @@ body{
 
     .presentacion-contenido-enlace-boton{
         width: 80%;
+    }
+
+    /* Ajuste para el título en móvil */
+    .presentacion-contenido-titulo{
+        min-height: 150px; 
     }
 }
