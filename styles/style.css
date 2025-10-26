@@ -27,15 +27,14 @@ body{
     color: var(--color--segundario);
 }
 
-/* --- NUEVO: EFECTO SCANLINES --- */
+/* Efecto Scanlines */
 body::after {
     content: "";
-    position: fixed; /* Fijo para que cubra todo */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    /* Líneas negras muy sutiles */
     background: repeating-linear-gradient(
         to bottom,
         transparent 0,
@@ -43,19 +42,24 @@ body::after {
         rgba(0, 0, 0, 0.2) 2px,
         transparent 3px
     );
-    pointer-events: none; /* Permite hacer clic a través de él */
-    z-index: 1000; /* Se asegura de estar encima del fondo */
+    pointer-events: none; 
+    z-index: 1000;
 }
-/* --- FIN DE SCANLINES --- */
+
 
 .texto-destacado {
     color: var(--color--terciario); ;
 }
 
-/* --- NUEVO: ANIMACIÓN TYPEWRITER (MÁQUINA DE ESCRIBIR) --- */
+/* --- CORRECCIÓN EN LA ANIMACIÓN TYPEWRITER --- */
 @keyframes typing {
     from { width: 0 }
-    to { width: 100% }
+    /* * CORRECCIÓN: 
+     * En lugar de 'width: 100%' (que se limita al contenedor),
+     * usamos '33ch' (33 unidades de caracter), que es el largo
+     * exacto de tu texto "enfocada en el desarrollo seguro."
+     */
+    to { width: 33ch }
 }
 @keyframes blink-caret {
     from, to { border-color: transparent }
@@ -63,21 +67,18 @@ body::after {
 }
 
 .typewriter {
-    display: inline-block; /* Necesario para animar el ancho */
-    overflow: hidden; /* Oculta el texto que no se ha "tecleado" */
-    white-space: nowrap; /* Mantiene el texto en una línea */
-    border-right: .15em solid var(--color--terciario); /* El cursor parpadeante */
-    width: 0; /* Comienza sin ancho (oculto) */
+    display: inline-block; 
+    overflow: hidden; 
+    white-space: nowrap; 
+    border-right: .15em solid var(--color--terciario); 
+    width: 0; 
     
-    /* Animación: 
-       typing: 2s de duración, 33 pasos (1 por caracter), 1s de retraso, se queda al final
-       blink-caret: 0.75s de duración, infinito
-    */
+    /* La animación sigue usando 33 pasos, ahora coincide con 33ch */
     animation: 
         typing 2s steps(33, end) 1s 1 forwards,
         blink-caret .75s step-end infinite;
 }
-/* --- FIN DE TYPEWRITER --- */
+/* --- FIN DE LA CORRECCIÓN --- */
 
 
 .presentacion {
@@ -103,7 +104,6 @@ body::after {
     font-size: 2.25rem;
     font-family: var(--fuente--krona);
     text-shadow: 0 0 5px rgba(187, 225, 250, 0.2);
-    /* Altura mínima para que el layout no "salte" mientras se teclea */
     min-height: 110px; 
 }
 
